@@ -16,7 +16,9 @@
 ###################################################################################
 #
 # Modified by SP2oNG 2019,2020
+# Modified by F4HWN 2020
 #
+
 from time import time, sleep, clock, localtime, strftime
 from random import randint
 import socket
