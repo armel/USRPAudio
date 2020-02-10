@@ -38,6 +38,7 @@ sudo python setup.py install
 
 https://github.com/Jeremie-C/OrangePi.GPIO/blob/master/example/pull_up_down.py
 '''
+GPIO.cleanup()
 
 GPIO.setboard(GPIO.ZERO)        # Orange Pi Zero board
 GPIO.setmode(GPIO.BOARD)        # set up BOARD GPIO numbering
