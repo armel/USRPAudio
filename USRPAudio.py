@@ -209,7 +209,7 @@ while True:
        exit(0)
     # ptt = ~ptt
     '''
-     if GPIO.input(10):
+    if GPIO.input(10):
         print "GPIO 10 is 1/HIGH/True - PTT ON"
         ptt = not ptt
 
