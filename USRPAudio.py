@@ -35,6 +35,8 @@ sudo apt-get install python-dev git
 git clone https://github.com/Jeremie-C/OrangePi.GPIO
 cd /OrangePi.GPIO
 sudo python setup.py install
+
+https://github.com/Jeremie-C/OrangePi.GPIO/blob/master/example/pull_up_down.py
 '''
 
 GPIO.setboard(GPIO.ZERO)        # Orange Pi Zero board
