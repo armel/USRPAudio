@@ -59,7 +59,7 @@ def rxAudioStream():
                     channels = CHANNELS,
                     rate = RATE,
                     output = True,
-		    		output_device_index=0,
+                    output_device_index=0,
                     frames_per_buffer = CHUNK
                     )
     
@@ -91,6 +91,8 @@ def rxAudioStream():
             audio = soundData[32:]
             if (type == 0): # voice
                 audio = soundData[32:]
+                GPIO.output(7, 1)
+                print "GPIO 7 is 1/HIGH/True"
                 #print(eye, seq, memory, keyup, talkgroup, type, mpxid, reserved, audio, len(audio), len(soundData))
                 if (len(audio) == 320):
                     if RATE == 48000:
@@ -110,6 +112,8 @@ def rxAudioStream():
                     lastKey = keyup
             if (type == 2): #metadata
                 audio = soundData[32:]
+                GPIO.output(7, 1)
+                print "GPIO 7 is 1/HIGH/True"
                 if ord(audio[0]) == 8:
                     tg = (ord(audio[9]) << 16) + (ord(audio[10]) << 8) + ord(audio[11])
                     rxslot = ord(audio[12]);
@@ -117,6 +121,9 @@ def rxAudioStream():
 
         else:
             print(soundData, len(soundData))
+            GPIO.output(7, 0)
+            print "GPIO 7 is 0/LOW/False"
+
     time.sleep(0.1)
     stream.stop_stream()
     stream.close()
@@ -134,7 +141,7 @@ def txAudioStream():
                     channels = CHANNELS,
                     rate = RATE,
                     input = True,
-		    input_device_index=0,
+                    input_device_index=0,
                     frames_per_buffer = CHUNK,
                     )
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -200,11 +207,11 @@ while True:
         ptt = not ptt
     if ord(ch) == 101:  # 101 is 'e' character, like 'exit'
        exit(0)
-	# ptt = ~ptt
-	'''
-	 if GPIO.input(10):
-	 	print "GPIO 10 is 1/HIGH/True - PTT ON"
-	 	ptt = not ptt
+    # ptt = ~ptt
+    '''
+     if GPIO.input(10):
+        print "GPIO 10 is 1/HIGH/True - PTT ON"
+        ptt = not ptt
 
 
 
