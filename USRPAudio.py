@@ -42,6 +42,9 @@ https://github.com/Jeremie-C/OrangePi.GPIO/blob/master/example/pull_up_down.py
 GPIO.setboard(GPIO.ZERO)                                # Orange Pi Zero board
 GPIO.setmode(GPIO.BCM)                                  # set up BOARD GPIO numbering
 GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_OFF)      # set GPIO 10 as INPUT
+
+#GPIO.setwarnings(False)
+GPIO.cleanup(7)
 GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
