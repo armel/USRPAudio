@@ -51,9 +51,9 @@ port = 51234
 outputDeviceIndex = 1
 
 def rxAudioStream():
-    #global ipAddress
-    #global port
-    #global outputDeviceIndex
+    global ipAddress
+    global port
+    global outputDeviceIndex
 
     print('Start audio thread')
     
@@ -139,9 +139,9 @@ def rxAudioStream():
     udp.close()
 
 def txAudioStream():
-    #global ipAddress
-    #global port
-    #global outputDeviceIndex
+    global ipAddress
+    global port
+    global outputDeviceIndex
 
     FORMAT = pyaudio.paInt16
     CHUNK = 960
