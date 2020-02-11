@@ -72,6 +72,7 @@ def rxAudioStream():
     
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    print ipAddress, outputDeviceIndex, port
     udp.bind(("", port))
     
     lastKey = -1
