@@ -50,6 +50,9 @@ ipAddress = "127.0.0.1"
 port = 51234
 outputDeviceIndex = 1
 
+
+print port 
+
 def rxAudioStream():
     global ipAddress
     print('Start audio thread')
