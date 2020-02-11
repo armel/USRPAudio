@@ -32,7 +32,6 @@ port_tx = 50111
 def rxAudioStream():
     global ipAddress
     print('Start audio thread')
-    print port_rx
 
     FORMAT = pyaudio.paInt16
     CHUNK = 360
@@ -108,8 +107,6 @@ def txAudioStream():
     CHUNK = 160
     CHANNELS = 1
     RATE = 8000
-
-    print port_tx
 
     stream = p.open(format=FORMAT,
                     channels = CHANNELS,
