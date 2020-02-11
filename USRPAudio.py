@@ -196,7 +196,7 @@ while True:
         ptt = not ptt
     if ord(ch) == 101:  # 101 is 'e' character, like 'exit'
        exit(0)
-#    ptt = ~ptt
+    # ptt = ~ptt
     '''
     if GPIO.input(10):
         print "GPIO 10 is 1/HIGH/True - PTT ON"
