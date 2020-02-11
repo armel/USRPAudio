@@ -39,12 +39,13 @@ sudo python setup.py install
 https://github.com/Jeremie-C/OrangePi.GPIO/blob/master/example/pull_up_down.py
 '''
 
-GPIO.setboard(GPIO.ZERO)        # Orange Pi Zero board
-GPIO.setmode(GPIO.BCM)        # set up BOARD GPIO numbering
-GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_OFF)    # set GPIO 10 as INPUT
-GPIO.setup(7, GPIO.OUT)        # set GPIO 7 as OUTPUT
+GPIO.setboard(GPIO.ZERO)                                # Orange Pi Zero board
+GPIO.setmode(GPIO.BCM)                                  # set up BOARD GPIO numbering
+GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_OFF)      # set GPIO 10 as INPUT
+GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
+port = "51234"
 
 def rxAudioStream():
     global ipAddress
@@ -156,13 +157,13 @@ def txAudioStream():
                 audio = stream.read(CHUNK, exception_on_overflow=False)
             if ptt != lastPtt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0)
-                udp.sendto(usrp, (ipAddress, 12345))
+                udp.sendto(usrp, (ipAddress, port))
                 seq = seq + 1
                 print 'PTT: {}'.format(ptt)
             lastPtt = ptt
             if ptt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0) + audio
-                udp.sendto(usrp, (ipAddress, 12345))
+                udp.sendto(usrp, (ipAddress, port))
                 print 'transmitting'
                 seq = seq + 1
         except:
