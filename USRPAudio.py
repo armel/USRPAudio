@@ -46,6 +46,7 @@ GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
 port = "51234"
+outputDeviceIndex = 0
 
 def rxAudioStream():
     global ipAddress
@@ -60,13 +61,13 @@ def rxAudioStream():
                     channels = CHANNELS,
                     rate = RATE,
                     output = True,
-                    output_device_index=0,
+                    output_device_index = outputDeviceIndex,
                     frames_per_buffer = CHUNK
                     )
     
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    udp.bind(("", 12345))
+    udp.bind(("", port))
     
     lastKey = -1
     start_time = time()
@@ -142,7 +143,7 @@ def txAudioStream():
                     channels = CHANNELS,
                     rate = RATE,
                     input = True,
-                    input_device_index=0,
+                    input_device_index= outputDeviceIndex,
                     frames_per_buffer = CHUNK,
                     )
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
