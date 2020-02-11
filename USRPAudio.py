@@ -46,7 +46,7 @@ GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
 port = "51234"
-outputDeviceIndex = 0
+outputDeviceIndex = 1
 
 def rxAudioStream():
     global ipAddress
