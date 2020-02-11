@@ -52,8 +52,8 @@ outputDeviceIndex = 1
 
 def rxAudioStream():
     global ipAddress
-    global port
-    global outputDeviceIndex
+    #global port
+    #global outputDeviceIndex
 
     print('Start audio thread')
     
