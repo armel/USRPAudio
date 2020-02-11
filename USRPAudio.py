@@ -43,8 +43,8 @@ GPIO.setwarnings(False)
 GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
-port_rx = 50112
-port_tx = 50111
+portRx = 50112
+portTx = 50111
 outputDeviceIndex = 1
 inputDeviceIndex = 1
 
@@ -67,7 +67,7 @@ def rxAudioStream():
 
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    udp.bind(("", port_rx))
+    udp.bind(("", portRx))
 
     lastKey = -1
     start_time = time()
@@ -143,13 +143,13 @@ def txAudioStream():
             audio = stream.read(160, exception_on_overflow=False)
             if ptt != lastPtt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0)
-                udp.sendto(usrp, (ipAddress, port_tx))
+                udp.sendto(usrp, (ipAddress, portTx))
                 seq = seq + 1
                 print 'PTT: {}'.format(ptt)
             lastPtt = ptt
             if ptt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0) + audio
-                udp.sendto(usrp, (ipAddress, port_tx))
+                udp.sendto(usrp, (ipAddress, portTx))
                 print 'transmitting'
                 seq = seq + 1
         except:
