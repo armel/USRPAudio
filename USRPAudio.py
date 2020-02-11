@@ -45,7 +45,7 @@ GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_OFF)      # set GPIO 10 as INPUT
 GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
-port = "51234"
+port = 51234
 outputDeviceIndex = 1
 
 def rxAudioStream():
