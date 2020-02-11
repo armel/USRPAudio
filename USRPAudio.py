@@ -48,13 +48,15 @@ GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
 
 ipAddress = "127.0.0.1"
 port = 51234
-PORT = 51234
 outputDeviceIndex = 1
 
 print port 
 
 def rxAudioStream():
     global ipAddress
+    global port
+    global outputDeviceIndex
+
     print('Start audio thread')
     
     FORMAT = pyaudio.paInt16
@@ -138,6 +140,10 @@ def rxAudioStream():
     udp.close()
 
 def txAudioStream():
+    global ipAddress
+    global port
+    global outputDeviceIndex
+    
     FORMAT = pyaudio.paInt16
     CHUNK = 960
     CHANNELS = 1
