@@ -14,10 +14,6 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 ###################################################################################
-#
-# Modified by SP2oNG 2019,2020
-# Modified by F4HWN 2020
-#
 
 from time import time, sleep, clock, localtime, strftime
 from random import randint
@@ -26,62 +22,40 @@ import struct
 import thread
 import shlex
 import pyaudio
-import audioop
-import OPi.GPIO as GPIO
-
-'''
-sudo apt-get update
-sudo apt-get install python-dev git
-git clone https://github.com/Jeremie-C/OrangePi.GPIO
-cd /OrangePi.GPIO
-sudo python setup.py install
-
-https://github.com/Jeremie-C/OrangePi.GPIO/blob/master/example/pull_up_down.py
-'''
-
-GPIO.setboard(GPIO.ZERO)                                # Orange Pi Zero board
-GPIO.setmode(GPIO.BCM)                                  # set up BOARD GPIO numbering
-GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_OFF)      # set GPIO 10 as INPUT
-
-GPIO.setwarnings(False)
-GPIO.setup(7, GPIO.OUT)                                 # set GPIO 7 as OUTPUT
+import sys
+import wave
 
 ipAddress = "127.0.0.1"
-port = 51234
-outputDeviceIndex = 1
+port_rx = 50112
+port_tx = 50111
 
 def rxAudioStream():
     global ipAddress
-    global port
-    global outputDeviceIndex
-
     print('Start audio thread')
-    
+    print port_rx
+
     FORMAT = pyaudio.paInt16
-    CHUNK = 160
+    CHUNK = 360
     CHANNELS = 1
-    RATE = 48000
-    
+    RATE = 8000
+
     stream = p.open(format=FORMAT,
                     channels = CHANNELS,
                     rate = RATE,
                     output = True,
-                    output_device_index = outputDeviceIndex,
-                    frames_per_buffer = CHUNK
+                    frames_per_buffer = CHUNK,
                     )
-    
+
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    udp.bind(("", port))
-    
+    udp.bind(("", port_rx))
+
     lastKey = -1
     start_time = time()
     call = ''
     tg = ''
     loss = '0.00%'
     rxslot = '0'
-    state = None
-    stream.start_stream()
     while True:
         soundData, addr = udp.recvfrom(1024)
         if addr[0] != ipAddress:
@@ -102,13 +76,9 @@ def rxAudioStream():
                 print "GPIO 7 is 1/HIGH/True"
                 #print(eye, seq, memory, keyup, talkgroup, type, mpxid, reserved, audio, len(audio), len(soundData))
                 if (len(audio) == 320):
-                    if RATE == 48000:
-                        (audio48, state) = audioop.ratecv(audio, 2, 1, 8000, 48000, state)
-                        stream.write(bytes(audio48), 160 * 6)
-                    else:
-                        stream.write(audio, 160)
+                    stream.write(audio, 160)
                 if (keyup != lastKey):
-#                    print('key' if keyup else 'unkey')
+                #print('key' if keyup else 'unkey')
                     if keyup:
                         start_time = time()
                     if keyup == False:
@@ -131,28 +101,20 @@ def rxAudioStream():
             GPIO.output(7, 0)
             print "GPIO 7 is 0/LOW/False"
 
-    time.sleep(0.1)
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
     udp.close()
 
 def txAudioStream():
-    global ipAddress
-    global port
-    global outputDeviceIndex
-
     FORMAT = pyaudio.paInt16
-    CHUNK = 960
+    CHUNK = 160
     CHANNELS = 1
-    RATE = 48000
-    state = None
+    RATE = 8000
+
+    print port_tx
 
     stream = p.open(format=FORMAT,
                     channels = CHANNELS,
                     rate = RATE,
                     input = True,
-                    input_device_index= outputDeviceIndex,
                     frames_per_buffer = CHUNK,
                     )
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -160,20 +122,16 @@ def txAudioStream():
     seq = 0
     while True:
         try:
-            if RATE == 48000:       # If we are reading at 48K we need to resample to 8K
-                audio48 = stream.read(CHUNK, exception_on_overflow=False)
-                (audio, state) = audioop.ratecv(audio48, 2, 1, 48000, 8000, state)
-            else:
-                audio = stream.read(CHUNK, exception_on_overflow=False)
+            audio = stream.read(160, exception_on_overflow=False)
             if ptt != lastPtt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0)
-                udp.sendto(usrp, (ipAddress, port))
+                udp.sendto(usrp, (ipAddress, port_tx))
                 seq = seq + 1
                 print 'PTT: {}'.format(ptt)
             lastPtt = ptt
             if ptt:
                 usrp = 'USRP' + struct.pack('>iiiiiii',seq, 0, ptt, 0, 0, 0, 0) + audio
-                udp.sendto(usrp, (ipAddress, port))
+                udp.sendto(usrp, (ipAddress, port_tx))
                 print 'transmitting'
                 seq = seq + 1
         except:
@@ -186,7 +144,7 @@ def _find_getch():
         # Non-POSIX. Return msvcrt's (Windows') getch.
         import msvcrt
         return msvcrt.getch
-    
+
     # POSIX system. Create and return a getch that manipulates the tty.
     import sys, tty
     def _getch():
@@ -198,7 +156,7 @@ def _find_getch():
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
-    
+
     return _getch
 
 ptt = False     # toggle this to transmit (left up to you)
@@ -208,7 +166,13 @@ thread.start_new_thread( rxAudioStream, () )
 thread.start_new_thread( txAudioStream, () )
 
 ##root.mainloop()
-#getch = _find_getch()
+##getch = _find_getch()
+##while True:
+##    ch = getch()
+##    if ord(ch) == 3:
+##       exit(0)
+##    ptt = ~ptt
+## getch = _find_getch()
 
 while True:
     '''
@@ -218,11 +182,10 @@ while True:
         ptt = not ptt
     if ord(ch) == 101:  # 101 is 'e' character, like 'exit'
        exit(0)
-    # ptt = ~ptt
+#    ptt = ~ptt
     '''
     if GPIO.input(10):
         print "GPIO 10 is 1/HIGH/True - PTT ON"
         ptt = not ptt
-
 
 
